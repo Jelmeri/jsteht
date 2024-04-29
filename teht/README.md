@@ -1,0 +1,2 @@
+# teht
+A JavaScript project
