@@ -93,6 +93,7 @@ function showDateTime() {
 }
 function checkGuess() {
   var randomNumber = Math.floor(Math.random() * 10) + 1;
+  console.log(randomNumber);
   var userGuess = parseInt(document.getElementById('guessInput').value);
   var resultDisplay = document.getElementById('guessResult');
   if (userGuess === randomNumber) {

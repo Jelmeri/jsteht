@@ -89,6 +89,7 @@
 
     function checkGuess() {
       const randomNumber = Math.floor(Math.random() * 10) + 1;
+      console.log(randomNumber)
       const userGuess = parseInt(document.getElementById('guessInput').value);
       const resultDisplay = document.getElementById('guessResult');
 
