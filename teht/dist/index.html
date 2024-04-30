@@ -55,9 +55,36 @@
     <input type="text" id="numberArrayInput">
     <button id="findRoundedNumberIndexButton">Etsi</button>
     <p id="findRoundedNumberIndexResult" class="result"></p>
+
+    <h2>Tarkista, sijaitseeko piste ympyrän sisällä</h2>
+    <p>Syötä ympyrän keskipisteen x- ja y-koordinaatit sekä säde:</p>
+    <input type="text" id="circleX">
+    <input type="text" id="circleY">
+    <input type="text" id="circleRadius">
+    <p>Syötä pisteen koordinaatit:</p>
+    <input type="text" id="pointX">
+    <input type="text" id="pointY">
+    <button id="checkPointButton">Tarkista</button>
+    <p id="checkPointResult" class="result"></p>
+
+    <h2>Kuplalajitteluautomaatti</h2>
+    <p>Tässä annettu taulukko autoista:</p>
+    <p>Merkki: <input type="text" id="carMake"></p>
+    <p>Malli: <input type="text" id="carModel"></p>
+    <p>Vuosimalli: <input type="text" id="carYear"></p>
+    <p>Nopeus: <input type="text" id="carSpeed"></p>
+    <button id="addCarButton">Lisää auto</button>
+    <button id="sortCarsButton">Järjestä autot</button>
+    <ul id="carList"></ul>
   </div>
 
-  <script>function showDateTime() {
+  <script>function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+function showDateTime() {
   var now = new Date();
   var date = now.toLocaleDateString('fi');
   var time = now.toLocaleTimeString('fi');
@@ -66,7 +93,6 @@
 }
 function checkGuess() {
   var randomNumber = Math.floor(Math.random() * 10) + 1;
-  console.log(randomNumber);
   var userGuess = parseInt(document.getElementById('guessInput').value);
   var resultDisplay = document.getElementById('guessResult');
   if (userGuess === randomNumber) {
@@ -124,8 +150,33 @@ function findRoundedNumberIndex(arr) {
   }
   return 0;
 }
+function checkPointInCircle() {
+  var circleX = parseFloat(document.getElementById('circleX').value);
+  var circleY = parseFloat(document.getElementById('circleY').value);
+  var circleRadius = parseFloat(document.getElementById('circleRadius').value);
+  var pointX = parseFloat(document.getElementById('pointX').value);
+  var pointY = parseFloat(document.getElementById('pointY').value);
+  var resultDisplay = document.getElementById('checkPointResult');
+  var distance = Math.sqrt(Math.pow(pointX - circleX, 2) + Math.pow(pointY - circleY, 2));
+  if (distance <= circleRadius) {
+    resultDisplay.textContent = "Piste sijaitsee ympyrän sisällä.";
+  } else {
+    resultDisplay.textContent = "Piste ei sijaitse ympyrän sisällä.";
+  }
+}
+function bubbleSort(cars) {
+  for (var i = 0; i < cars.length; i++) {
+    for (var j = 0; j < cars.length - 1; j++) {
+      if (cars[j].speed > cars[j + 1].speed) {
+        var temp = cars[j];
+        cars[j] = cars[j + 1];
+        cars[j + 1] = temp;
+      }
+    }
+  }
+  return cars;
+}
 window.onload = function () {
-  // Tämä käynnistää näyttää päivämäärä ja aika
   showDateTime();
   document.getElementById('guessButton').addEventListener('click', checkGuess);
   document.getElementById('calcButton').addEventListener('click', calculate);
@@ -148,6 +199,43 @@ window.onload = function () {
     var resultDisplay = document.getElementById('findRoundedNumberIndexResult');
     var index = findRoundedNumberIndex(numbers);
     resultDisplay.textContent = "Oikeanpuolimmaisen py\xF6ristetyn luvun indeksi: ".concat(index);
+  });
+  document.getElementById('checkPointButton').addEventListener('click', checkPointInCircle);
+  document.getElementById('addCarButton').addEventListener('click', function () {
+    var make = document.getElementById('carMake').value;
+    var model = document.getElementById('carModel').value;
+    var year = parseInt(document.getElementById('carYear').value);
+    var speed = parseInt(document.getElementById('carSpeed').value);
+    var carList = document.getElementById('carList');
+    var li = document.createElement('li');
+    li.textContent = "".concat(make, " ").concat(model, ", ").concat(year, ", ").concat(speed, " km/h");
+    carList.appendChild(li);
+  });
+  document.getElementById('sortCarsButton').addEventListener('click', function () {
+    var cars = [];
+    var carItems = document.querySelectorAll('#carList li');
+    carItems.forEach(function (item) {
+      var _item$textContent$spl = item.textContent.split(', '),
+        _item$textContent$spl2 = _slicedToArray(_item$textContent$spl, 4),
+        make = _item$textContent$spl2[0],
+        model = _item$textContent$spl2[1],
+        year = _item$textContent$spl2[2],
+        speed = _item$textContent$spl2[3];
+      cars.push({
+        make: make.split(' ')[0],
+        model: make.split(' ')[1],
+        year: parseInt(year),
+        speed: parseInt(speed)
+      });
+    });
+    var sortedCars = bubbleSort(cars);
+    var carList = document.getElementById('carList');
+    carList.innerHTML = '';
+    sortedCars.forEach(function (car) {
+      var li = document.createElement('li');
+      li.textContent = "".concat(car.make, " ").concat(car.model, ", ").concat(car.year, ", ").concat(car.speed, " km/h");
+      carList.appendChild(li);
+    });
   });
 };</script>
 </body>

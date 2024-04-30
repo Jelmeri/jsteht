@@ -55,6 +55,27 @@
     <input type="text" id="numberArrayInput">
     <button id="findRoundedNumberIndexButton">Etsi</button>
     <p id="findRoundedNumberIndexResult" class="result"></p>
+
+    <h2>Tarkista, sijaitseeko piste ympyrän sisällä</h2>
+    <p>Syötä ympyrän keskipisteen x- ja y-koordinaatit sekä säde:</p>
+    <input type="text" id="circleX">
+    <input type="text" id="circleY">
+    <input type="text" id="circleRadius">
+    <p>Syötä pisteen koordinaatit:</p>
+    <input type="text" id="pointX">
+    <input type="text" id="pointY">
+    <button id="checkPointButton">Tarkista</button>
+    <p id="checkPointResult" class="result"></p>
+
+    <h2>Kuplalajitteluautomaatti</h2>
+    <p>Tässä annettu taulukko autoista:</p>
+    <p>Merkki: <input type="text" id="carMake"></p>
+    <p>Malli: <input type="text" id="carModel"></p>
+    <p>Vuosimalli: <input type="text" id="carYear"></p>
+    <p>Nopeus: <input type="text" id="carSpeed"></p>
+    <button id="addCarButton">Lisää auto</button>
+    <button id="sortCarsButton">Järjestä autot</button>
+    <ul id="carList"></ul>
   </div>
 
   <script>
@@ -68,7 +89,6 @@
 
     function checkGuess() {
       const randomNumber = Math.floor(Math.random() * 10) + 1;
-      console.log(randomNumber)
       const userGuess = parseInt(document.getElementById('guessInput').value);
       const resultDisplay = document.getElementById('guessResult');
 
@@ -139,8 +159,37 @@
       return 0;
     }
 
+    function checkPointInCircle() {
+      const circleX = parseFloat(document.getElementById('circleX').value);
+      const circleY = parseFloat(document.getElementById('circleY').value);
+      const circleRadius = parseFloat(document.getElementById('circleRadius').value);
+      const pointX = parseFloat(document.getElementById('pointX').value);
+      const pointY = parseFloat(document.getElementById('pointY').value);
+      const resultDisplay = document.getElementById('checkPointResult');
+
+      const distance = Math.sqrt(Math.pow(pointX - circleX, 2) + Math.pow(pointY - circleY, 2));
+
+      if (distance <= circleRadius) {
+        resultDisplay.textContent = "Piste sijaitsee ympyrän sisällä.";
+      } else {
+        resultDisplay.textContent = "Piste ei sijaitse ympyrän sisällä.";
+      }
+    }
+
+    function bubbleSort(cars) {
+      for (let i = 0; i < cars.length; i++) {
+        for (let j = 0; j < cars.length - 1; j++) {
+          if (cars[j].speed > cars[j + 1].speed) {
+            const temp = cars[j];
+            cars[j] = cars[j + 1];
+            cars[j + 1] = temp;
+          }
+        }
+      }
+      return cars;
+    }
+
     window.onload = function() {
-      // Tämä käynnistää näyttää päivämäärä ja aika
       showDateTime();
 
       document.getElementById('guessButton').addEventListener('click', checkGuess);
@@ -167,6 +216,37 @@
         const resultDisplay = document.getElementById('findRoundedNumberIndexResult');
         const index = findRoundedNumberIndex(numbers);
         resultDisplay.textContent = `Oikeanpuolimmaisen pyöristetyn luvun indeksi: ${index}`;
+      });
+
+      document.getElementById('checkPointButton').addEventListener('click', checkPointInCircle);
+      document.getElementById('addCarButton').addEventListener('click', function() {
+        const make = document.getElementById('carMake').value;
+        const model = document.getElementById('carModel').value;
+        const year = parseInt(document.getElementById('carYear').value);
+        const speed = parseInt(document.getElementById('carSpeed').value);
+        const carList = document.getElementById('carList');
+
+        const li = document.createElement('li');
+        li.textContent = `${make} ${model}, ${year}, ${speed} km/h`;
+        carList.appendChild(li);
+      });
+
+      document.getElementById('sortCarsButton').addEventListener('click', function() {
+        const cars = [];
+        const carItems = document.querySelectorAll('#carList li');
+        carItems.forEach(item => {
+          const [make, model, year, speed] = item.textContent.split(', ');
+          cars.push({ make: make.split(' ')[0], model: make.split(' ')[1], year: parseInt(year), speed: parseInt(speed) });
+        });
+
+        const sortedCars = bubbleSort(cars);
+        const carList = document.getElementById('carList');
+        carList.innerHTML = '';
+        sortedCars.forEach(car => {
+          const li = document.createElement('li');
+          li.textContent = `${car.make} ${car.model}, ${car.year}, ${car.speed} km/h`;
+          carList.appendChild(li);
+        });
       });
     }
   </script>
