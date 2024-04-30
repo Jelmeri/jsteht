@@ -37,8 +37,118 @@
     <input type="text" id="checkNumber">
     <button id="sameDigitsButton">Tarkista</button>
     <p id="sameDigitsResult" class="result"></p>
+
+    <h2>Jaa URL-osoite osiin</h2>
+    <p>Syötä URL-osoite:</p>
+    <input type="text" id="urlInput">
+    <button id="splitURLButton">Pilko</button>
+    <p id="splitURLResult" class="result"></p>
+
+    <h2>Vaihda parittaiset numerot</h2>
+    <p>Syötä numero:</p>
+    <input type="text" id="numberInput">
+    <button id="swapNumbersButton">Vaihda</button>
+    <p id="swapNumbersResult" class="result"></p>
+
+    <h2>Etsi oikeanpuolimmainen pyöristetty luku</h2>
+    <p>Syötä luvut erotettuna pilkulla:</p>
+    <input type="text" id="numberArrayInput">
+    <button id="findRoundedNumberIndexButton">Etsi</button>
+    <p id="findRoundedNumberIndexResult" class="result"></p>
   </div>
 
-  <script src="/main.1f19ae8e.js"></script>
+  <script>function showDateTime() {
+  var now = new Date();
+  var date = now.toLocaleDateString('fi');
+  var time = now.toLocaleTimeString('fi');
+  var dateTime = "T\xE4n\xE4\xE4n on: ".concat(date, ". aika on: ").concat(time);
+  document.getElementById('date-time').textContent = dateTime;
+}
+function checkGuess() {
+  var randomNumber = Math.floor(Math.random() * 10) + 1;
+  console.log(randomNumber);
+  var userGuess = parseInt(document.getElementById('guessInput').value);
+  var resultDisplay = document.getElementById('guessResult');
+  if (userGuess === randomNumber) {
+    resultDisplay.textContent = "oho onnekas!";
+  } else {
+    resultDisplay.textContent = "väärä.";
+  }
+}
+function calculate() {
+  var num1 = parseFloat(document.getElementById('num1').value);
+  var num2 = parseFloat(document.getElementById('num2').value);
+  var resultDisplay = document.getElementById('calcResult');
+  var multiply = num1 * num2;
+  var divide = num1 / num2;
+  resultDisplay.textContent = "Kertolasku: ".concat(multiply, ", Jakolasku: ").concat(divide);
+}
+function convertTemperature() {
+  var tempInput = parseFloat(document.getElementById('tempInput').value);
+  var tempResult = document.getElementById('tempResult');
+  var celsiusToFahrenheit = tempInput * 9 / 5 + 32;
+  var fahrenheitToCelsius = (tempInput - 32) * 5 / 9;
+  tempResult.textContent = "".concat(tempInput, "\xB0C on ").concat(celsiusToFahrenheit, "\xB0F, ").concat(tempInput, "\xB0F on ").concat(fahrenheitToCelsius, "\xB0C");
+}
+function checkSameDigits() {
+  var number = document.getElementById('checkNumber').value;
+  var resultDisplay = document.getElementById('sameDigitsResult');
+  var digits = number.toString().split('');
+  var firstDigit = digits[0];
+  var allSame = digits.every(function (digit) {
+    return digit === firstDigit;
+  });
+  if (allSame) {
+    resultDisplay.textContent = "numerot ovat samoja.";
+  } else {
+    resultDisplay.textContent = "Numerot ei oo samoi.";
+  }
+}
+function splitURL(url) {
+  return url.split(/[:/]+/);
+}
+function swapAdjacentNumbers(num) {
+  var numArray = String(num).split('');
+  for (var i = 0; i < numArray.length - 1; i += 2) {
+    var temp = numArray[i];
+    numArray[i] = numArray[i + 1];
+    numArray[i + 1] = temp;
+  }
+  return parseInt(numArray.join(''));
+}
+function findRoundedNumberIndex(arr) {
+  for (var i = arr.length - 1; i >= 0; i--) {
+    if (Number.isInteger(arr[i]) && arr[i] % 10 === 0) {
+      return i;
+    }
+  }
+  return 0;
+}
+window.onload = function () {
+  // Tämä käynnistää näyttää päivämäärä ja aika
+  showDateTime();
+  document.getElementById('guessButton').addEventListener('click', checkGuess);
+  document.getElementById('calcButton').addEventListener('click', calculate);
+  document.getElementById('tempButton').addEventListener('click', convertTemperature);
+  document.getElementById('sameDigitsButton').addEventListener('click', checkSameDigits);
+  document.getElementById('splitURLButton').addEventListener('click', function () {
+    var url = document.getElementById('urlInput').value;
+    var resultDisplay = document.getElementById('splitURLResult');
+    var urlParts = splitURL(url);
+    resultDisplay.textContent = "URL-osat: ".concat(urlParts.join(', '));
+  });
+  document.getElementById('swapNumbersButton').addEventListener('click', function () {
+    var num = parseInt(document.getElementById('numberInput').value);
+    var resultDisplay = document.getElementById('swapNumbersResult');
+    var swappedNumber = swapAdjacentNumbers(num);
+    resultDisplay.textContent = "Vaihdettu numero: ".concat(swappedNumber);
+  });
+  document.getElementById('findRoundedNumberIndexButton').addEventListener('click', function () {
+    var numbers = document.getElementById('numberArrayInput').value.split(',').map(Number);
+    var resultDisplay = document.getElementById('findRoundedNumberIndexResult');
+    var index = findRoundedNumberIndex(numbers);
+    resultDisplay.textContent = "Oikeanpuolimmaisen py\xF6ristetyn luvun indeksi: ".concat(index);
+  });
+};</script>
 </body>
 </html>
